@@ -1,0 +1,74 @@
+from Pila import Pila
+
+if __name__=='__main__':
+    Pila1=Pila()
+    Pila2=Pila()
+    Pila3=Pila()
+    Pila1.push(7)
+    Pila1.push(1)
+    Pila1.push(14)
+    Pila1.push(9)
+    Pila1.push(3)
+    Pila1.push(2)
+    Pila2.push(7)
+    Pila2.push(3)
+    Pila2.push(21)
+    Pila2.push(1)
+    Pila2.push(12)
+    """""
+    Pila3.push(0)
+    print(Pila1)
+    print(Pila2)
+    print(type(Pila1.top.elemento))
+    print(type(Pila2.top.elemento))
+    print(Pila3.esta_vacia())
+    if not Pila3.esta_vacia():
+        print(type(Pila3.top.elemento))
+        print(Pila3.top.elemento <=100)
+    """
+
+
+    while not Pila1.esta_vacia() or not Pila2.esta_vacia():
+        if int(Pila1.top.elemento) >= int(Pila2.top.elemento):
+            max = Pila1.top
+            num_pila =1
+        else:
+            max = Pila2.top
+            num_pila = 2
+
+        if Pila3.esta_vacia():
+            Pila3.push(max.elemento)
+            if num_pila == 1:
+                Pila1.pop()
+            else:
+                Pila2.pop()
+        else:
+            print(Pila3.top.elemento)
+            if Pila3.top.elemento>=max.elemento:
+                Pila3.push(max.elemento)
+                if num_pila == 1:
+                    Pila1.pop()
+                else:
+                    Pila2.pop()
+                continue
+            else:
+                if num_pila==2:
+                    elem2=Pila3.top
+                    Pila1.push(elem2.elemento)
+                    Pila3.pop()
+                    Pila3.push(max.elemento)
+                else:
+                    elem1 = Pila1.top
+                    if int(Pila1.top.elemento) <= int(Pila3.top.elemento):
+                        Pila3.push(elem1.elemento)
+                        Pila1.pop()
+                    else:
+                        elem2 = Pila3.top
+                        Pila2.push(elem2.elemento)
+                        Pila3.pop()
+                        Pila3.push(max.elemento)
+                continue
+
+    print(Pila1)
+    print(Pila2)
+    print(Pila3)
