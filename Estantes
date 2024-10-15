@@ -1,0 +1,310 @@
+import book
+from book import *
+from Pila import *
+from csv import  *
+from ListaBookOrden import *
+from Pila import Pila
+from rich.console import Console
+from rich.table import Table
+from rich.panel import Panel
+
+
+def comp_titulo(book1: Book, book2: Book) -> int:
+    """
+    """
+    if isinstance(book1, Book) and isinstance(book2, Book):
+        if book1.titulo < book2.titulo:
+            return -1
+        elif book1.titulo > book2.titulo:
+            return 1
+        else:
+            return 0
+
+
+def comp_autor(book1: Book, book2: Book) -> int:
+    """
+    """
+    if isinstance(book1, Book) and isinstance(book2, Book):
+        if book1.autor < book2.autor:
+            return -1
+        elif book1.autor > book2.autor:
+            return 1
+        else:
+            return 0
+
+
+def comp_editorial(book1: Book, book2: Book) -> int:
+    """
+    """
+    if isinstance(book1, Book) and isinstance(book2, Book):
+        if book1.editorial < book2.editorial:
+            return -1
+        elif book1.editorial > book2.editorial:
+            return 1
+        else:
+            return 0
+
+
+def crearLibro(fila):
+    """"
+     Crea un objeto book  a partir de los datos de una fila del archivo CSV.
+
+    Args:
+    fila (list): Una lista que contiene los datos de una fila del archivo CSV.
+
+    Returns:
+    Book, El objeto de contacto creado, o None si la fila está vacía.
+    """
+    try:
+        titulo = fila[0]
+        autor = fila[1]
+        editorial = fila[2]
+        anio = int(fila[3])
+        book = Book(titulo, autor, editorial, anio)
+
+        return book
+
+    except (ValueError, IndexError) as e:
+        print(f"Error al procesar la fila: {fila}")
+        print(f"Error: {e}")
+        return None  # Devolver None en caso de error
+
+def apilar_Archivo(Pila: Pila, archivo_csv):
+    try:
+        with open(archivo_csv, newline='', encoding='utf-8') as csvfile:
+            lector = csv.reader(csvfile)
+            next(lector)
+            for fila in lector:
+                libro=crearLibro(fila)
+                if libro is not None:
+                    Pila.push(libro)
+                    print(f"Libro agregado: {libro}")
+    except FileNotFoundError:
+        print(f"Error, no se encontró el archivo: {archivo_csv}")
+
+if __name__=="__main__":
+    Repisa1=Pila()
+    Repisa2=Pila()
+    RepisaOrdenada = None
+    volver_al_menu = 's'
+    while volver_al_menu.lower() == 's':
+        # Mostramos las opciones del menu usando rich
+        console = Console()
+
+        table = Table(title="Menú de la biblioteca R2-Dato")
+        table.add_column("Opción", style="cyan")
+        table.add_column("Descripción")
+
+        table.add_row("1", "Agregar libros a la primer repisa.")
+        table.add_row("2", "Agregar libros a la segunda repisa.")
+        table.add_row("3", "Conocer la cantidad de ejemplares de un libro que hay en la biblioteca.")
+        table.add_row("4", "Guardar repisa ordenada en un archivo.")
+        table.add_row("5", "Listar todos los libros de la biblioteca (sin orden particular).")
+        table.add_row("6", "Mostrar los datos de un libro.")
+        table.add_row("7", "Reacomodar y listar todos los libros existentes por orden alfabético "
+                                "de título.")
+        table.add_row("8", "Reacomodar y listar todos los libros existentes en el inventario por orden alfabético de "
+                                "autor.")
+        table.add_row("9", "Reacomodar y listar todos los libros existentes en el inventario por orden alfabético de "
+                                "editorial.")
+        table.add_row("10", "Vaciar la biblioteca.")
+        table.add_row("11", "Verificar si un libro se encuentra disponible en la biblioteca.")
+        table.add_row("12", "Verificar la cantidad de libros en el inventario.")
+        table.add_row("13", "Verificar si la biblioteca está vacía.")
+
+        table.add_row("14", "Salir.")
+
+        console.print(Panel(table, title="Menú"))
+
+        opcion = input("Elige una opción: ")
+
+        # Validar la opción
+        opciones_validas = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+        while opcion not in opciones_validas:
+            print("Opción inválida. Por favor, introduce una de las opciones del menú.")
+            opcion = input("Elige una opción: ")
+
+        if opcion == "1":
+            respuesta=input("Elija como desea agregar libros a la repisa:"
+                            "\n a) Mediante lectura de archivo csv."
+                            "\n b) Mediante agregado manual (libro por libro)."
+                            "\n")
+            if respuesta.lower() == "a":
+                archivo=input("Escribe el nombre del archivo csv: ")
+                apilar_Archivo(Repisa1, archivo)
+            else:
+                while True:
+                    titulo = input("Proporcione el título del libro: ")
+                    autor = input("Proporcione el autor del libro: ")
+                    editorial = input("Proporcione el editorial del libro: ")
+                    anio = int(input("Proporcione el año de publicación del libro: "))
+                    libro=crearLibro([titulo, autor, editorial, anio])
+                    Repisa1.push(libro)
+                    continuar = input("¿Desea seguir agregando libros a la repisa 1? [S/N]")
+                    while continuar.lower() != "n" and continuar.lower() != "s":
+                        continuar = input("Por favor, escoja una opción válida.")
+                    if continuar.lower() == "s":
+                        pass
+                    else:
+                        break
+            continue
+
+        elif opcion == "2":
+            respuesta = input("Elija como desea agregar libros a la repisa:"
+                              "\n a) Mediante lectura de archivo csv."
+                              "\n b) Mediante agregado manual (libro por libro).\n")
+            if respuesta.lower() == "a":
+                archivo = input("Escribe el nombre del archivo csv: ")
+                apilar_Archivo(Repisa2, archivo)
+            else:
+                while True:
+                    titulo = input("Proporcione el título del libro: ")
+                    autor = input("Proporcione el autor del libro: ")
+                    editorial = input("Proporcione el editorial del libro: ")
+                    anio = int(input("Proporcione el año de publicación del libro: "))
+                    libro = crearLibro([titulo, autor, editorial, anio])
+                    Repisa2.push(libro)
+                    continuar = input("¿Desea seguir agregando libros a la repisa 2? [S/N]")
+                    while continuar.lower() != "n" and continuar.lower() != "s":
+                        continuar = input("Por favor, escoja una opción válida.")
+                    if continuar.lower() == "s":
+                        pass
+                    else:
+                        break
+
+        # elif opcion == "3":
+        #    titulo = input("Ingresa el título del ejemplar que estás buscando: ")
+        #    autor = input("Ingresa el autor del libro que estás buscando: ")
+        #    editorial = input("Ingresa la editorial del libro: ")
+        #    anio = input("Ingresa el año de publicación de tu libro: ")
+        #    librorequerido = book.Book(titulo, autor, editorial, anio)
+        #    if not Repisa1.esta_vacia():
+        #        if Repisa1.contiene(librorequerido):
+
+
+
+        elif opcion == "4":
+            pass
+
+
+
+        elif opcion == "5":
+            if Repisa1 is not None:
+                print(Repisa1)
+            if Repisa2 is not None:
+                print(Repisa2)
+            if RepisaOrdenada is not None:
+                print(RepisaOrdenada)
+
+        elif opcion == "6":
+            pass
+
+
+        elif opcion == "7":
+            it1 = iter(Repisa1)
+            it2 = iter(Repisa2)
+            RepisaOrdenada2 = Lista(comp_titulo)
+            while True:
+                try:
+                    RepisaOrdenada2.agregar(next(it1))
+                except StopIteration:
+                    break
+            while True:
+                try:
+                    RepisaOrdenada2.agregar(next(it2))
+                except StopIteration:
+                    break
+            if RepisaOrdenada is not None:
+                it3 = iter(RepisaOrdenada)
+                while True:
+                    try:
+                        RepisaOrdenada2.agregar(next(it3))
+                    except StopIteration:
+                        break
+
+            RepisaOrdenada = RepisaOrdenada2
+            Repisa1.vaciar()
+            Repisa2.vaciar()
+
+        elif opcion== "8":
+            it1 = iter(Repisa1)
+            it2 = iter(Repisa2)
+            RepisaOrdenada2=Lista(comp_autor)
+            while True:
+                try:
+                    RepisaOrdenada2.agregar(next(it1))
+                except StopIteration:
+                    break
+            while True:
+                try:
+                    RepisaOrdenada2.agregar(next(it2))
+                except StopIteration:
+                    break
+            if RepisaOrdenada is not None:
+                it3 = iter(RepisaOrdenada)
+                while True:
+                    try:
+                        RepisaOrdenada2.agregar(next(it3))
+                    except StopIteration:
+                        break
+            RepisaOrdenada = RepisaOrdenada2
+            Repisa1.vaciar()
+            Repisa2.vaciar()
+
+
+        elif opcion == "9":
+            it1 = iter(Repisa1)
+            it2 = iter(Repisa2)
+            RepisaOrdenada2=Lista(comp_editorial)
+            while True:
+                try:
+                    RepisaOrdenada2.agregar(next(it1))
+                except StopIteration:
+                    break
+            while True:
+                try:
+                    RepisaOrdenada2.agregar(next(it2))
+                except StopIteration:
+                    break
+            if RepisaOrdenada is not None:
+                it3 = iter(RepisaOrdenada)
+                while True:
+                    try:
+                        RepisaOrdenada2.agregar(next(it3))
+                    except StopIteration:
+                        break
+
+            RepisaOrdenada=RepisaOrdenada2
+            Repisa1.vaciar()
+            Repisa2.vaciar()
+
+        elif opcion == "10":
+            Repisa1.vaciar()
+            Repisa2.vaciar()
+            RepisaOrdenada.vaciar()
+            print("La biblioteca se ha vaciado")
+
+        elif opcion == "11":
+            titulo = input("Ingresa el título del ejemplar que estás buscando: ")
+            autor = input("Ingresa el autor del libro que estás buscando: ")
+            editorial = input("Ingresa la editorial del libro: ")
+            anio = input("Ingresa el año de publicación de tu libro: ")
+            librorequerido = book.Book(titulo, autor, editorial, anio)
+            if (Repisa1.contiene(librorequerido) or Repisa2.contiene(librorequerido) or
+                    RepisaOrdenada.contiene(librorequerido)):
+                print("El libro -{}- está disponible en la biblioteca".format(titulo))
+            else:
+                print("El libro -{}- no está disponible en la biblioteca".format(titulo))
+
+        elif opcion == "12":
+            pass
+
+        elif opcion == "13":
+            if Repisa1.esta_vacia() and Repisa2.esta_vacia() and RepisaOrdenada.esta_vacia():
+                print("La biblioteca está vacía")
+            else:
+                print("La biblioteca no está vacía")
+
+        elif opcion == "14":
+            "Gracias por usar la biblioteca R-2 Dato, ¡Hasta luego!"
+            break
