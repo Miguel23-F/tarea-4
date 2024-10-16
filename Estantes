@@ -97,22 +97,30 @@ if __name__=="__main__":
 
         table.add_row("1", "Agregar libros a la primer repisa.")
         table.add_row("2", "Agregar libros a la segunda repisa.")
-        table.add_row("3", "Conocer la cantidad de ejemplares de un libro que hay en la biblioteca.")
+        table.add_row("3", "Conocer el número de ejemplares de un libro en la biblioteca.")
         table.add_row("4", "Guardar repisa ordenada en un archivo.")
-        table.add_row("5", "Listar todos los libros de la biblioteca (sin orden particular).")
-        table.add_row("6", "Mostrar los datos de un libro.")
-        table.add_row("7", "Reacomodar y listar todos los libros existentes por orden alfabético "
-                                "de título.")
-        table.add_row("8", "Reacomodar y listar todos los libros existentes en el inventario por orden alfabético de "
+        table.add_row("5", "Eliminar un libro de la repisa ordenada (Un ejemplar).")
+        table.add_row("6", "Eliminar un libro de la repisa ordenada (Todos los ejemplares).")
+        table.add_row("7", "Listar todos los libros de la biblioteca (estantes sin ordenar y estantes ordenados.")
+        table.add_row("8", "Reacomodar todos los libros existentes por orden alfabético de "
+                                "título.")
+        table.add_row("9", "Reacomodar todos los libros existentes por orden alfabético de "
                                 "autor.")
-        table.add_row("9", "Reacomodar y listar todos los libros existentes en el inventario por orden alfabético de "
+        table.add_row("10", "Reacomodar y listar todos los libros existentes en el inventario por orden alfabético de "
                                 "editorial.")
-        table.add_row("10", "Vaciar la biblioteca.")
-        table.add_row("11", "Verificar si un libro se encuentra disponible en la biblioteca.")
-        table.add_row("12", "Verificar la cantidad de libros en el inventario.")
-        table.add_row("13", "Verificar si la biblioteca está vacía.")
+        table.add_row("11", "Reacomodar solamente los libros de la repisa ordenada por orden alfabético de "
+                                "título.")
+        table.add_row("12", "Reacomodar solamente los libros de la repisa ordenada por orden alfabético de "
+                                "autor.")
+        table.add_row("13", "Reacomodar solamente los libros de la repisa ordenada por orden alfabético de "
+                                "editorial.")
 
-        table.add_row("14", "Salir.")
+        table.add_row("14", "Vaciar la biblioteca.")
+        table.add_row("15", "Verificar si un libro se encuentra disponible en la biblioteca.")
+        table.add_row("16", "Verificar la cantidad de libros en la biblioteca.")
+        table.add_row("17", "Verificar si la biblioteca está vacía.")
+
+        table.add_row("18", "Salir.")
 
         console.print(Panel(table, title="Menú"))
 
@@ -172,33 +180,75 @@ if __name__=="__main__":
                     else:
                         break
 
-        # elif opcion == "3":
-        #    titulo = input("Ingresa el título del ejemplar que estás buscando: ")
-        #    autor = input("Ingresa el autor del libro que estás buscando: ")
-        #    editorial = input("Ingresa la editorial del libro: ")
-        #    anio = input("Ingresa el año de publicación de tu libro: ")
-        #    librorequerido = book.Book(titulo, autor, editorial, anio)
-        #    if not Repisa1.esta_vacia():
-        #        if Repisa1.contiene(librorequerido):
-
-
+        elif opcion == "3":
+            titulo = input("Ingresa el título del ejemplar que estás buscando: ")
+            autor = input("Ingresa el autor del libro que estás buscando: ")
+            editorial = input("Ingresa la editorial del libro: ")
+            anio = input("Ingresa el año de publicación de tu libro: ")
+            librorequerido = book.Book(titulo, autor, editorial, anio)
+            if not Repisa1.esta_vacia():
+                contadorpila1 = 0
+                it1 = iter(Repisa1)
+                while True:
+                    try:
+                        if next(it1) == librorequerido:
+                            contadorpila1 += 1
+                    except StopIteration:
+                        break
+            if not Repisa2.esta_vacia():
+                contadorpila2 = 0
+                it2 = iter(Repisa2)
+                while True:
+                    try:
+                        if next(it2) == librorequerido:
+                            contadorpila2 += 1
+                    except StopIteration:
+                        break
+            if not RepisaOrdenada is None:
+                contadorlista = 0
+                it3 = iter(RepisaOrdenada)
+                while True:
+                    try:
+                        if next(it3) == librorequerido:
+                            contadorlista += 1
+                    except StopIteration:
+                        break
+            if Repisa1.esta_vacia():
+                contadorpila1 = 0
+            if Repisa2.esta_vacia():
+                contadorpila2 = 0
+            if RepisaOrdenada is None:
+                contadorlista = 0
+            totalderepeticiones = contadorpila1 + contadorpila2 + contadorlista
+            print("Hay un total de {} ejemplares del libro buscado en la biblioteca".format(totalderepeticiones))
 
         elif opcion == "4":
             pass
 
-
-
         elif opcion == "5":
-            if Repisa1 is not None:
-                print(Repisa1)
-            if Repisa2 is not None:
-                print(Repisa2)
-            if RepisaOrdenada is not None:
-                print(RepisaOrdenada)
+            titulo = input("Ingresa el título del ejemplar que quieres eliminar: ")
+            autor = input("Ingresa el autor del libro: ")
+            editorial = input("Ingresa la editorial del libro: ")
+            anio = input("Ingresa el año de publicación del libro: ")
+            libroaeliminar = book.Book(titulo, autor, editorial, anio)
+            if RepisaOrdenada.contiene(libroaeliminar):
+                RepisaOrdenada.eliminar(libroaeliminar)
+                print("El libro {} ha sido eliminado (al menos 1 vez) de la repisa ordenada".format(titulo))
+            else:
+                print("El libro {} no se encuentra en la repisa ordenada".format(titulo))
 
         elif opcion == "6":
-            pass
-
+            titulo = input("Ingresa el título del ejemplar que quieres eliminar: ")
+            autor = input("Ingresa el autor del libro: ")
+            editorial = input("Ingresa la editorial del libro: ")
+            anio = input("Ingresa el año de publicación del libro: ")
+            libroaeliminar = book.Book(titulo, autor, editorial, anio)
+            if RepisaOrdenada.contiene(libroaeliminar):
+                while RepisaOrdenada.contiene(libroaeliminar):
+                    RepisaOrdenada.eliminar(libroaeliminar)
+                print("El libro {} ha sido eliminado completamente de la repisa ordenada".format(titulo))
+            else:
+                print("El libro a eliminar no se encuentra en la repisa ordenada")
 
         elif opcion == "7":
             it1 = iter(Repisa1)
@@ -305,6 +355,13 @@ if __name__=="__main__":
             else:
                 print("La biblioteca no está vacía")
 
-        elif opcion == "14":
+        elif opcion == "16":
+            librospila1 = Repisa1.tamanio()
+            librospila2 = Repisa2.tamanio()
+            librolista = RepisaOrdenada.tamanio()
+            totallibros = librospila1 + librospila2 + librolista
+            print("El total de libros almacenados en la biblioteca es de {}".format(totallibros))
+
+        elif opcion == "18":
             "Gracias por usar la biblioteca R-2 Dato, ¡Hasta luego!"
             break
